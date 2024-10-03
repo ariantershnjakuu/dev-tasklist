@@ -1,23 +1,37 @@
-async function getBookings() {
-  const res = await fetch('http://host.docker.internal:5000/api/bookings', { cache: 'no-store', mode: 'no-cors' })
- 
-  if (!res.ok) {
-    throw new Error('Failed to fetch data')
-  }
- 
-  return res.json()
+import Link from 'next/link';
+
+interface Booking {
+  id: number;
+  service: string;
+  doctor_name: string;
+  start_time: string;
+  end_time: string;
+  date: string;
 }
 
-const Home: React.FC = async () => {
+async function getBookings(): Promise<Booking[]> {
+  const res = await fetch('http://backend:5000/api/bookings', { cache: 'no-store' });
+  if (!res.ok) {
+    throw new Error('Failed to fetch bookings');
+  }
+  return res.json();
+}
 
-  const bookings = await getBookings()
+export default async function Home() {
+  const bookings = await getBookings();
 
   return (
-    <div>
-      <h1>Current booking count: {bookings.length}</h1>
-
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">Bookings</h1>
+      <ul className="space-y-4">
+        {bookings.map((booking) => (
+          <li key={booking.id} className="bg-white shadow rounded-lg p-4">
+            <Link href={`/booking/${booking.id}`} className="text-blue-600 hover:underline">
+              A Booking on {booking.date} starting at {booking.start_time}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
-};
-
-export default Home;
+}

@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@types/next": "^8.0.7",
+    "cors": "^2.8.5",
+    "next": "^14.2.14",
+    "next-navigation": "^1.0.6",
+    "react-router-dom": "^6.26.2"
+  }
+}
