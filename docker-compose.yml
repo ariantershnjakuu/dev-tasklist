@@ -33,6 +33,16 @@ services:
       - ./frontend:/usr/src/app
     depends_on:
       - mysql
+    command: npm start
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /usr/src/app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
   backend:
     build:
       context: ./backend

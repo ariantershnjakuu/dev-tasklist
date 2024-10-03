@@ -2,18 +2,16 @@
 
 import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-
-interface FormData {
-  service: string;
-  doctor_name: string;
-  start_time: string;
-  end_time: string;
-  date: string;
-}
+import InputField from '@/components/InputField';
+import Button from '@/UI/Button';
+import Container from '@/UI/Container';
+import Flex from '@/UI/Flex';
+import Text from '@/UI/Text';
+import { AddBookingFormData } from '@/types/booking.types';
 
 export default function NewBookingPage() {
   const router = useRouter();
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<AddBookingFormData>({
     service: '',
     doctor_name: '',
     start_time: '',
@@ -27,7 +25,7 @@ export default function NewBookingPage() {
     setErrors([]);
 
     try {
-      const response = await fetch('http://localhost:5001/api/bookings', {
+      const response = await fetch(`http://localhost:5001/api/bookings`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,82 +51,28 @@ export default function NewBookingPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Create New Booking</h1>
-      <form onSubmit={handleSubmit} className="max-w-md mx-auto">
-        <div className="mb-4">
-          <label htmlFor="service" className="block mb-2">Service</label>
-          <input
-            type="text"
-            id="service"
-            name="service"
-            value={formData.service}
-            onChange={handleInputChange}
-            required
-            className="w-full px-3 py-2 border rounded text-black"
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="doctor_name" className="block mb-2">Doctor Name</label>
-          <input
-            type="text"
-            id="doctor_name"
-            name="doctor_name"
-            value={formData.doctor_name}
-            onChange={handleInputChange}
-            required
-            className="w-full px-3 py-2 border rounded text-black"
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="start_time" className="block mb-2">Start Time</label>
-          <input
-            type="time"
-            id="start_time"
-            name="start_time"
-            value={formData.start_time}
-            onChange={handleInputChange}
-            required
-            className="w-full px-3 py-2 border rounded text-black"
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="end_time" className="block mb-2">End Time</label>
-          <input
-            type="time"
-            id="end_time"
-            name="end_time"
-            value={formData.end_time}
-            onChange={handleInputChange}
-            required
-            className="w-full px-3 py-2 border rounded text-black"
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="date" className="block mb-2">Date</label>
-          <input
-            type="date"
-            id="date"
-            name="date"
-            value={formData.date}
-            onChange={handleInputChange}
-            required
-            className="w-full px-3 py-2 border rounded text-black"
-          />
-        </div>
-        <button type="submit" className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+    <Container className="isolate bg-white px-6 pb-24 pt-16 lg:px-8 flex flex-col">
+      <Flex className="mx-auto max-w-2xl text-center">
+        <h1 className="text-3xl font-bold mb-6">Create New Booking</h1>
+      </Flex>
+      <form onSubmit={handleSubmit} className="mx-auto mt-8 max-w-lg min-w-[500px]">
+        <InputField label="Service" type="text" name="service" value={formData.service} onChange={handleInputChange} required />
+        <InputField label="Doctor Name" type="text" name="doctor_name" value={formData.doctor_name} onChange={handleInputChange} required />
+        <Flex className="flex gap-5">
+        <InputField label="Start Time" type="time" name="start_time" value={formData.start_time} onChange={handleInputChange} required />
+        <InputField label="End Time" type="time" name="end_time" value={formData.end_time} onChange={handleInputChange} required />
+        </Flex>
+        <InputField label="Date" type="date" name="date" value={formData.date} onChange={handleInputChange} required />
+        <Button type="submit" className='text-white rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold 
+        outline-none hover:bg-indigo-500transition-all duration-300 w-full'>
           Create Booking
-        </button>
+        </Button>
       </form>
       {errors.length > 0 && (
-        <div className="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          <ul className="list-disc list-inside">
-            {errors.map((error, index) => (
-              <li key={index}>{error}</li>
-            ))}
-          </ul>
-        </div>
+        <Flex className="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+              <Text>{errors}</Text>
+        </Flex>
       )}
-    </div>
+    </Container>
   );
 }

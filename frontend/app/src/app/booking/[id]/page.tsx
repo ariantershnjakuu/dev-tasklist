@@ -2,19 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Button from '@/UI/Button';
+import Text from '@/UI/Text';
+import Container from '@/UI/Container';
+import Flex from '@/UI/Flex';
+import BookingDetail from '@/components/BookingDetail';
+import { ViewBooking } from '@/types/booking.types';
+import { formatDate } from '@/utils/formatDate';
 
-interface Booking {
-  id: number;
-  service: string;
-  doctor_name: string;
-  start_time: string;
-  end_time: string;
-  date: string;
-}
 
 export default function BookingDetailsPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const [booking, setBooking] = useState<Booking | null>(null);
+  const [booking, setBooking] = useState<ViewBooking | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -45,36 +44,21 @@ export default function BookingDetailsPage({ params }: { params: { id: string } 
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Booking Details</h1>
-      <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <div className="mb-4">
-          <strong className="block text-gray-700 text-sm font-bold mb-2">Service:</strong>
-          <p className="text-gray-700">{booking.service}</p>
-        </div>
-        <div className="mb-4">
-          <strong className="block text-gray-700 text-sm font-bold mb-2">Doctor Name:</strong>
-          <p className="text-gray-700">{booking.doctor_name}</p>
-        </div>
-        <div className="mb-4">
-          <strong className="block text-gray-700 text-sm font-bold mb-2">Start Time:</strong>
-          <p className="text-gray-700">{booking.start_time}</p>
-        </div>
-        <div className="mb-4">
-          <strong className="block text-gray-700 text-sm font-bold mb-2">End Time:</strong>
-          <p className="text-gray-700">{booking.end_time}</p>
-        </div>
-        <div className="mb-4">
-          <strong className="block text-gray-700 text-sm font-bold mb-2">Date:</strong>
-          <p className="text-gray-700">{booking.date}</p>
-        </div>
-      </div>
-      <button
-        onClick={() => router.push('/')}
-        className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
-      >
+    <Container className="container mx-auto px-4 py-8">
+      <Text className="text-3xl font-bold mb-6 text-start pl-8">Booking Details</Text>
+      <Flex className="bg-white rounded px-8 pt-6 pb-8 mb-4 flex-col">
+    <dl className="divide-y divide-gray-100">
+        <BookingDetail label="Service" value={booking.service} />
+        <BookingDetail label="Doctor Name" value={booking.doctor_name} />
+        <BookingDetail label="Start Time" value={booking.start_time} />
+        <BookingDetail label="End Time" value={booking.end_time} />
+        <BookingDetail label="Date" value={formatDate(booking.date)} />
+    </dl>
+      </Flex>
+      <Button onClick={() => router.push('/')} className='ml-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-center 
+      text-sm font-semibold outline-none hover:bg-indigo-500transition-all duration-300 text-white'>
         Back to Home
-      </button>
-    </div>
+      </Button>
+    </Container>
   );
 }
